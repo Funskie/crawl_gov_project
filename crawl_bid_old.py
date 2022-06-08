@@ -13,15 +13,15 @@ from email import encoders, utils
 from email.mime.multipart import MIMEMultipart
 bidHead = ['關鍵字','機關名稱','案號','標案名稱','傳輸次數','公告日期','截標日期','預算金額','標案連結']
 scheduler = BlockingScheduler()
-mailTo = ['peanutchou@thinktronltd.com','tyteng@thinktronltd.com','ctcheng@thinktronltd.com','pcchi@thinktronltd.com','cwshen@thinktronltd.com','khlin@thinktronltd.com','a0923812432@gmail.com','zorachen@thinktronltd.com','yhli@thinktronltd.com','karl.lai@thinktronltd.com','hyshawn@thinktronltd.com','yuhsiang@thinktronltd.com','alex332233@thinktronltd.com']
+mailTo = ['chongjing3370@gmail.com', 'tusty9292@gmail.com']
 
 def sendMail(mailList, mailBody):
     #本區設定smtp server
     # smtp_server = 'smtp.office365.com:587'
-    me = 'choupeanut@gmail.com'
+    me = 'tusty9292@gmail.com'
     mail = MIMEMultipart()
     mail['Subject'] = "政府採購公告網 "+str(time.strftime("%Y/%m/%d-%H%M"))
-    mail['From'] = 'choupeanut@gmail.com'
+    mail['From'] = 'tusty9292@gmail.com'
     mail['Date'] = utils.formatdate(localtime = 1)
     mail['Message-ID'] = utils.make_msgid()
     mail['Content-Type'] = "text/calendar; charset=utf-8"
@@ -33,7 +33,7 @@ def sendMail(mailList, mailBody):
     #必須要先ehlo再stattls
     sever.ehlo()
     sever.starttls()
-    sever.login('choupeanut@gmail.com', 'Ss22243581')
+    sever.login('chongjing3370@gmail.com', 'Cj16684351')
     sever.sendmail(me, mailList, mail.as_string())
     sever.quit()
 
@@ -66,6 +66,7 @@ def crawlBid(keywords, orgKW):
     bidList = []
     bidList_1 = []
     linkList = []
+
     #Table標題列
     for s in keywords:
         bidSystemUrl = "https://web.pcc.gov.tw/tps/pss/tender.do?method=goSearch&searchMode=common&searchType=basic"
@@ -149,13 +150,13 @@ mailtext = ""
 bid_list = []
 
 def crawl_job():
-    keywords= ['聯網','監測','自動','智慧','監控','灌溉','節水','調控','逕流','出流管制']
+    keywords= ['聯網','監測','自動','智慧','監控','灌溉','節水','調控','逕流','出流管制','塔寮坑']
     orgKW= ['水利署']
     bid1 = crawlBid(keywords, orgKW)
     text1 = '<b>水專管今日標案　　</b><a href="http://140.112.10.220/allbidWRA.html">等標期內標案 按此<a><br>'
     text1 += mailBody(bidHead, bid1)
     text1 += '標案關鍵字：'+str(keywords)+'<br>機關關鍵字：'+str(orgKW)
-    keywords= ['智慧','溪溝','水土保持','坡地','物聯','監測','可利用','土地利用','邊坡','社區','水資源','崩塌','土石流','防災','太陽能','數據','綠能','土砂','雲端','韌性','巨量資料','地理','液化','維護管理','監控','電信','系統整合','汚水','三維','管線','BIM','灌溉','資訊','管理','下水道','農村社區','森林','火災','養殖','漏水','數位治理','科學','園區','工業區']
+    keywords= ['智慧','溪溝','水土保持','坡地','物聯','監測','可利用','土地利用','邊坡','社區','水資源','崩塌','土石流','防災','太陽能','大數據','綠能','土砂','雲端','韌性','巨量資料','地理','液化','維護管理','監控','電信','系統整合','汚水','三維','管線','BIM','灌溉','資訊','管理','下水道','農村社區','森林','火災','養殖','漏水']
     orgKW= ['國家災害防救科技中心','大地工程處']
     bid2 = crawlBid(keywords, orgKW)
     text1 += '<br><br><b>團隊相關今日標案　　</b><a href="http://140.112.10.220/allbid.html">等標期內標案 按此<a><br>'

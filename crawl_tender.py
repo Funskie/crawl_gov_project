@@ -19,7 +19,7 @@ from email.mime.multipart import MIMEMultipart
 keywords = ["邊坡", "崩塌", "復建"]
 orgkws = ["水土保持局臺北分局", "羅東林區管理處 ", "第四區養護工程處", "宜蘭縣"]
 loc_list = ["臺北", "新北", "桃園", "新竹", "宜蘭"]
-phantomjs_path = r"D:\PyProjects\projcrawler\phantomjs-2.1.1-windows\bin\phantomjs.exe"
+# phantomjs_path = r"D:\PyProjects\projcrawler\phantomjs-2.1.1-windows\bin\phantomjs.exe"
 mailList = [
     'chongjing3370@gmail.com', 
     'tusty9292@gmail.com', 
@@ -27,49 +27,59 @@ mailList = [
     ]
 
 def get_tender_by_kw(kws, loc):
-    driver = webdriver.PhantomJS(executable_path=phantomjs_path)
+    driver = webdriver.Chrome()
     tender_list = []
     for k in kws:
-        bidSystemUrl = "https://web.pcc.gov.tw/tps/pss/tender.do?method=goSearch&searchMode=common&searchType=basic"
+        bidSystemUrl = "https://web.pcc.gov.tw/pis/"
         browse = driver.get(bidSystemUrl)
         homepage = driver.page_source
         query = driver.find_element_by_name("tenderName")
         query.clear()
         query.send_keys(k)
-        queryCate = driver.find_element_by_css_selector("#radProctrgCate1")
+        queryCate = driver.find_element_by_css_selector("#basicRadProctrgCate1")
         queryCate.click()
-        queryTime = driver.find_element_by_css_selector("#rangeTenderDateRadio")
+        queryTime = driver.find_element_by_css_selector("#basicIsSpdtDateTypeId")
         queryTime.click()
         query_loc = driver.find_element_by_name("orgName")
         query_loc.send_keys(loc)
-        query.send_keys(Keys.RETURN)
+        driver.execute_script('return basicTenderSearch()')
+        # query.send_keys(Keys.RETURN)
         sleep(1) #等頁面回傳
         bidpage = driver.page_source
         soup = BeautifulSoup(bidpage, 'html.parser')
-        tender_table = soup.find_all("tr", onmouseover="overcss(this);")
-        tender_list += tender_table
+        tender_table = soup.find_all("tbody")[-1].find_all("tr")
+        if (len(tender_table) == 1) and (tender_table[0].text == "無符合條件資料"):
+            continue
+        else:
+            tender_list += tender_table
+    driver.close()
     return list(set(tender_list))
 
 def get_tender_by_org(orgs):
-    driver = webdriver.PhantomJS(executable_path=phantomjs_path)
+    driver = webdriver.Chrome()
     tender_list = []
     for o in orgs:
-        bidSystemUrl = "https://web.pcc.gov.tw/tps/pss/tender.do?method=goSearch&searchMode=common&searchType=basic"
+        bidSystemUrl = "https://web.pcc.gov.tw/pis/"
         browse = driver.get(bidSystemUrl)
         homepage = driver.page_source
         query = driver.find_element_by_name("orgName")
         query.clear()
         query.send_keys(o)
-        queryCate = driver.find_element_by_css_selector("#radProctrgCate1")
+        queryCate = driver.find_element_by_css_selector("#basicRadProctrgCate1")
         queryCate.click()
-        queryTime = driver.find_element_by_css_selector("#rangeTenderDateRadio")
+        queryTime = driver.find_element_by_css_selector("#basicIsSpdtDateTypeId")
         queryTime.click()
-        query.send_keys(Keys.RETURN)
+        driver.execute_script('return basicTenderSearch()')
+        # query.send_keys(Keys.RETURN)
         sleep(1) #等頁面回傳
         bidpage = driver.page_source
         soup = BeautifulSoup(bidpage, 'html.parser')
-        tender_table = soup.find_all("tr", onmouseover="overcss(this);")
-        tender_list += tender_table
+        tender_table = soup.find_all("tbody")[-1].find_all("tr")
+        if (len(tender_table) == 1) and (tender_table[0].text == "無符合條件資料"):
+            continue
+        else:
+            tender_list += tender_table
+    driver.close()
     return list(set(tender_list))
 
 def get_tender_info(tender):
@@ -82,7 +92,7 @@ def get_tender_info(tender):
         "公告日期": "".join(tender.find_all("td")[6].text.split()), 
         "截止投標": "".join(tender.find_all("td")[7].text.split()), 
         "預算金額": "".join(tender.find_all("td")[8].text.split()), 
-        "url": tender.find_all("td")[2].find('a').get('href').replace("..", "https://web.pcc.gov.tw/tps")
+        "url": tender.find_all("td")[2].find('a').get('href').replace("/prkms/urlSelector/common/tpam?pk", "https://web.pcc.gov.tw/tps/QueryTender/query/searchTenderDetail?pkPmsMain"),
            }
 
 if __name__ == '__main__':
