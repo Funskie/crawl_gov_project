@@ -17,7 +17,7 @@ from email import encoders, utils
 from email.mime.multipart import MIMEMultipart
 
 keywords = ["邊坡", "崩塌", "復建"]
-orgkws = ["水土保持局臺北分局", "羅東林區管理處 ", "第四區養護工程處", "宜蘭縣"]
+orgkws = ["水土保持局臺北分局", "羅東林區管理處", "第四區養護工程處", "宜蘭縣"]
 loc_list = ["臺北", "新北", "桃園", "新竹", "宜蘭"]
 # phantomjs_path = r"D:\PyProjects\projcrawler\phantomjs-2.1.1-windows\bin\phantomjs.exe"
 mailList = [
